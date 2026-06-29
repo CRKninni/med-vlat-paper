@@ -1,0 +1,38 @@
+# PathVQA phase-2: aux MLP experts on frozen 65% flash backbone
+# CLOSED → yes/no head (3362/3363 test closed are yes/no)
+# OPEN   → 4878-way lightweight MLP head
+train_file: ["/home/gen/crk/medical_vqa/pvqa/improved/train_pathvqa.json"]
+test_file: ["/home/gen/crk/medical_vqa/pvqa/improved/test_pathvqa.json"]
+answer_list: '/home/gen/crk/medical_vqa/pvqa/improved/answer_list.json'
+
+vqa_root: '/home/gen/crk/medical_vqa/pvqa/images'
+
+image_res: 384
+batch_size_train: 768
+batch_size_test: 16
+k_test: 1
+alpha: 0.4
+distill: True
+warm_up: False
+
+skip_pretrain: True
+
+use_closed_yn_head: True
+closed_yn_train_only: True
+closed_yn_loss_weight: 1.0
+closed_yn_infer_weight: 0.65
+closed_yn_hidden_dim: 768
+
+use_open_answer_head: True
+open_answer_train_only: True
+open_answer_loss_weight: 1.0
+open_answer_infer_weight: 0.35
+open_answer_hidden_dim: 1024
+
+use_answer_type_routing: True
+
+eos: '[SEP]'
+bert_config: 'configs/config_bert.json'
+
+optimizer: {opt: adamW, lr: 1e-4, weight_decay: 0.01}
+schedular: {sched: cosine, lr: 1e-4, epochs: 40, min_lr: 1e-6, decay_rate: 1, warmup_lr: 1e-5, warmup_epochs: 2, cooldown_epochs: 0}
