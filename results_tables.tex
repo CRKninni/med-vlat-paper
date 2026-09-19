@@ -170,6 +170,40 @@ MED-VLAT\_384 (Pretrain No GF)
 \end{table*}
 
 
+% ── Table 2b: Gating & head-schedule ablations (Reviewer Major Comment 4) ───
+\begin{table*}[t]
+\centering
+\caption{Ablation of adaptive gating (Eq.~8--9) and hierarchical head schedule
+on SLAKE, PathVQA, and VQA-RAD. Test accuracy at \textbf{epoch~40} under
+enhanced-pretrain-only initialization, linear attention @224 (see rebuttal
+for protocol details). Paper Table~3 peaks use longer training and
+dataset-specific recipes.}
+\label{tab:gating_head_ablation_40ep}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Variant} & \textbf{SLAKE} & \textbf{PathVQA} & \textbf{VQA-RAD} \\
+\midrule
+\multicolumn{4}{l}{\textit{Component (Table R4-A)}} \\
+Full: 6L, $[12,12,8,6,4,4]$, gating on
+  & 83.79 & 64.28 & 74.06 \\
+No adaptive gating (standard residual)
+  & 84.64 & 64.56 & 72.06 \\
+Constant heads $[8,8,8,8,8,8]$, gating on
+  & 84.17 & 64.21 & 75.61 \\
+\midrule
+\multicolumn{4}{l}{\textit{Capacity @ 40 ep, gating on (Table R4-B)}} \\
+4 layers, $[12,12,8,6]$
+  & 85.49 & 65.05 & 73.84 \\
+6L, $[4,4,4,4,4,4]$
+  & 85.01 & 64.00 & 76.05 \\
+6L, inverted $[4,6,8,12,12,12]$
+  & 84.64 & 63.79 & 75.83 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
 % ── Table 3: Open-ended NLP metrics (Reviewer Major Rev. 1) ─────────────────
 \begin{table}[t]
 \centering
