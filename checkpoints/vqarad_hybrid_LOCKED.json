@@ -1,0 +1,32 @@
+{
+  "locked_at": "2026-09-17",
+  "name": "VQA-RAD MED-VLAT dual-route (LOCKED)",
+  "split": "test_m3ae.json",
+  "n_questions": 451,
+  "checkpoints": {
+    "fggf_open": "checkpoints/vqarad_hybrid/vqarad_fggf_open_best_open.pth",
+    "fggf_choice": "checkpoints/vqarad_hybrid/vqarad_fggf_q2a_best.pth",
+    "closed_yn": "checkpoints/vqarad_hybrid/vqarad_medvlat_closed_yn_best.pth"
+  },
+  "extract_note": "tar -xzf checkpoints/vqarad_paper_hybrid.tar.gz -C checkpoints/vqarad_hybrid",
+  "config": {
+    "fggf_open_yaml": "configs/VQA_RAD_m3ae_full_ft_a_fggf.yaml",
+    "fggf_choice_yaml": "configs/VQA_RAD_m3ae_q2a_fggf.yaml",
+    "routing": {
+      "open": "fggf_open",
+      "closed_yesno": "medvlat_closed_yn",
+      "closed_choice": "fggf_q2a"
+    },
+    "architecture": "FGGF 6L [12,12,8,6,4,4] linear/flash @224; closed Y/N ViT–language specialist @384"
+  },
+  "test_results": {
+    "overall_pct": 81.82,
+    "overall_n": "369/451",
+    "open_pct": 65.92,
+    "open_n": "118/179",
+    "closed_pct": 92.28,
+    "closed_n": "251/272",
+    "closed_routing": {"closed_yn": 248, "fggf_choice": 24}
+  },
+  "eval_script": "sh_files/eval_vqarad_medvlat_locked.sh"
+}

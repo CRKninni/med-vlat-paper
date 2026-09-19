@@ -1,0 +1,131 @@
+% ============================================================
+%  Author Response — Reviewer #1, Major Comment 3
+%  Explainability / Grad-CAM / quantitative grounding
+%
+%  Compile: include this file from your main rebuttal .tex, or
+%  \usepackage{graphicx,color} and \input{rebuttal_major_comment3.tex}
+%  Figure path is relative to repo root: output/figures/slake_figure6_locked.png
+% ============================================================
+
+\subsection*{Reviewer \#1, Major Comment 3}
+
+\noindent\textbf{Original comment:}
+\begin{quote}
+\small
+The paper claims ``explainable multimodal reasoning'' based purely on
+qualitative Grad-CAM visualizations (Figure~6). It is well-documented that
+standard Grad-CAM is unreliable for Vision Transformers and often highlights
+high-frequency edges or background artifacts. The paper should supplement this
+claim with a quantitative metric (e.g., Pointing Game accuracy or radiologist
+evaluation).
+\end{quote}
+
+\noindent\textbf{Our response:}
+
+We thank the reviewer for this important criticism. We fully agree that
+qualitative heatmaps alone---especially raw ViT Grad-CAM---are insufficient to
+support strong explainability claims~\cite{chefer2021transformer}. We have
+revised the manuscript to report \textbf{quantitative grounding alongside
+attribution visualizations}, replaced raw ViT Grad-CAM as the primary saliency
+method, regenerated Figure~6, and toned down explainability wording throughout
+the paper.
+
+\medskip
+\noindent\textbf{(1) Revised attribution methodology.}
+
+In the revised manuscript, saliency maps indicate where the model attends when
+producing an answer. Saliency is computed from an ensemble of FineGrained
+text$\rightarrow$image cross-attention maps (final three layers) and
+fusion-block text$\rightarrow$image cross-attention, rather than raw ViT
+Grad-CAM. This targets the multimodal fusion stage where question semantics
+interact with grounded image tokens. On a SLAKE localization subset, raw ViT
+Grad-CAM (\textbf{22.84\%}) and attention rollout (\textbf{13.58\%}) achieve
+lower Pointing Game accuracy than our fusion-stage maps under the same protocol.
+
+\medskip
+\noindent\textbf{(2) Quantitative Pointing Game on SLAKE.}
+
+SLAKE provides an official lesion segmentation mask (\texttt{mask.png}) for each
+of the 642 test images. We evaluate on the \textbf{full test set}
+($n{=}1061$ QA pairs). A pointing prediction is a \emph{hit} if the top 5\%
+saliency mass overlaps the lesion mask; we also report argmax pointing for
+comparison (top-5\% overlap is more stable than argmax for small lesions).
+MED-VLAT achieves \textbf{86.24\%} VQA accuracy on SLAKE,
+\textbf{43.92\%} mask-based Pointing Game accuracy (argmax), and
+\textbf{70.97\%} with the primary top-5\% saliency-overlap criterion. On
+correctly answered questions only, top-5\% pointing remains \textbf{70.07\%},
+showing that grounding is not an artefact of wrong answers.
+
+\medskip
+\noindent\textbf{(3) PathVQA and VQA-RAD (no region GT).}
+
+PathVQA ($n{=}6719$) and VQA-RAD ($n{=}451$) lack segmentation masks or
+bounding boxes in the test annotations, so mask-based Pointing Game is
+\textbf{not applicable}. We instead report \emph{mean attention focus}
+(peak-to-mean saliency on the same combined attribution maps; higher values
+indicate more localized saliency):
+\begin{itemize}
+  \item \textbf{PathVQA} (\textbf{65.66\%} VQA accuracy; 41.63\% open,
+        89.65\% closed): mean attention focus \textbf{1.99} on correctly
+        answered questions (\textbf{2.21} on the full test set).
+  \item \textbf{VQA-RAD} (\textbf{81.82\%} overall, 369/451; 65.92\% open,
+        92.28\% closed) with the locked MED-VLAT dual-route VQA-RAD system:
+        mean attention focus \textbf{3.39} on localizing-style questions
+        ($n{=}220$; \textbf{3.32} on the full test set), computed from the
+        FGGF Q2A checkpoint (closed yes/no branch uses a separate
+        vision--language specialist without FineGrained fusion saliency maps).
+\end{itemize}
+
+\medskip
+\noindent\textbf{(4) Regenerated Figure~6 (qualitative + quantitative link).}
+
+Figure~\ref{fig:slake_grounding_rebuttal} replaces the original qualitative-only
+Grad-CAM figure. We show five representative SLAKE localization cases (liver
+lesion, brain, liver cancer, cardiomegaly, small bowel) with correct VQA
+answers. Panel~(b) shows official \texttt{detection.json} bounding boxes (red);
+panel~(e) verifies whether the argmax activation falls inside the ground-truth
+region. The caption reports full-test Pointing Game accuracy so qualitative
+panels are tied directly to the quantitative metric above.
+
+\medskip
+\noindent\textbf{(5) Toned-down claims.}
+
+We removed ``explainable multimodal reasoning'' and describe
+\textbf{visual grounding analysis} instead: attribution maps are supporting
+evidence supplemented by Pointing Game accuracy, not validated clinical
+explanations.
+
+\medskip
+\noindent\textbf{(6) Radiologist evaluation.}
+
+A formal radiologist user study was not feasible within the revision timeline.
+We acknowledge this as a limitation and identify it as future work. SLAKE
+Pointing Game on official annotations provides an objective, reproducible
+quantitative complement in the interim.
+
+\medskip
+\noindent\textbf{Summary of manuscript changes:}
+\begin{itemize}
+  \item New \textbf{Visual Grounding Evaluation} discussion in Results (attribution
+        protocol, SLAKE Pointing Game, PathVQA/VQA-RAD attention focus).
+  \item \textbf{Revised Figure~6} (five-panel layout with GT boxes and argmax
+        verification; see Figure~\ref{fig:slake_grounding_rebuttal} below).
+  \item Softened explainability claims in the Introduction, Results, and
+        Conclusion.
+\end{itemize}
+
+% --- Figure for rebuttal (same asset as revised manuscript Figure 6) ---
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{output/figures/slake_figure6_locked.png}
+\caption{Revised visual grounding figure for the manuscript (SLAKE).
+\textbf{(a)}~Original medical image.
+\textbf{(b)}~Ground-truth lesion/organ region (\texttt{detection.json} red bounding box).
+\textbf{(c)}~FineGrained+fusion text$\rightarrow$image attribution heatmap.
+\textbf{(d)}~Overlay of the heatmap on the image.
+\textbf{(e)}~Whether the highest-activation point falls inside the ground-truth region.
+On the full SLAKE test set ($n{=}1061$), MED-VLAT achieves \textbf{70.97\%}
+Pointing Game accuracy (top-5\% saliency overlap with \texttt{mask.png}) and
+\textbf{43.92\%} argmax accuracy at \textbf{86.24\%} VQA accuracy.}
+\label{fig:slake_grounding_rebuttal}
+\end{figure*}

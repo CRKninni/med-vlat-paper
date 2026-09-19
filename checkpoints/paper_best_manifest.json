@@ -1,0 +1,72 @@
+{
+  "version": "1.1",
+  "description": "Three paper Table-3 deliverables: one checkpoint per benchmark row (VQA-RAD is a hybrid bundle).",
+  "github_repo": "CRKninni/med-vlat-paper",
+  "release_tag_suggested": "paper-checkpoints-v1",
+  "fggf_architecture": {
+    "fg_layers": 6,
+    "head_schedule": [12, 12, 8, 6, 4, 4],
+    "bidirectional": true,
+    "adaptive_gating": true
+  },
+  "models": [
+    {
+      "id": "slake_paper_best",
+      "dataset": "SLAKE",
+      "paper_overall_pct": 86.24,
+      "paper_open_pct": 85.58,
+      "paper_closed_pct": 87.26,
+      "best_epoch": 110,
+      "train_epochs_scheduled": 140,
+      "resolution": 224,
+      "attention": "linear",
+      "release_asset": "slake_paper_best.pth",
+      "source_checkpoint": "/home/gen/crk/med_vlat_latest1/output/vqa/attention_ablation/slake_linear/SLAKE_Enhanced_best.pth",
+      "repo_relative_after_download": "checkpoints/slake_paper_best.pth"
+    },
+    {
+      "id": "pathvqa_paper_best",
+      "dataset": "PathVQA",
+      "paper_overall_pct": 65.66,
+      "paper_open_pct": 41.63,
+      "paper_closed_pct": 89.65,
+      "best_epoch": 10,
+      "train_epochs_scheduled": 40,
+      "stage": "aux_mlp_on_flash_backbone",
+      "resolution": 384,
+      "attention": "flash",
+      "release_asset": "pathvqa_paper_best.pth",
+      "source_checkpoint": "/home/gen/crk/med_vlat_latest1/output/vqa/path_aux_mlp/VQA_Enhanced_best.pth",
+      "repo_relative_after_download": "checkpoints/pathvqa_paper_best.pth"
+    },
+    {
+      "id": "vqarad_paper_hybrid",
+      "dataset": "VQA-RAD",
+      "paper_overall_pct": 81.82,
+      "paper_open_pct": 65.92,
+      "paper_closed_pct": 92.28,
+      "note": "81.82% is MED-VLAT dual-route merge (FGGF + closed Y/N specialist), not one weight file.",
+      "release_asset": "vqarad_paper_hybrid.tar.gz",
+      "repo_relative_after_download": "checkpoints/vqarad_paper_hybrid.tar.gz",
+      "bundle_members": [
+        {
+          "name_in_tar": "vqarad_fggf_open_best_open.pth",
+          "source_checkpoint": "/home/gen/crk/med-vlat-paper/output/vqa/vqarad_m3ae_full_ft_a/RAD_Enhanced_best_open.pth",
+          "role": "open-ended"
+        },
+        {
+          "name_in_tar": "vqarad_fggf_q2a_best.pth",
+          "source_checkpoint": "/home/gen/crk/med-vlat-paper/output/vqa/vqarad_m3ae_q2a_fggf/RAD_Enhanced_best.pth",
+          "role": "closed multi-choice"
+        },
+        {
+          "name_in_tar": "vqarad_medvlat_closed_yn_best.pth",
+          "source_checkpoint": "output/vqa/vqarad_medvlat_closed_yn/MED_VLAT_closed_yn_best.pth",
+          "role": "closed yes/no (MED-VLAT specialist)"
+        }
+      ],
+      "hybrid_lock": "checkpoints/vqarad_hybrid_LOCKED.json",
+      "eval_script": "sh_files/eval_vqarad_medvlat_locked.sh"
+    }
+  ]
+}

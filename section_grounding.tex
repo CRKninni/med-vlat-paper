@@ -1,0 +1,73 @@
+% ============================================================
+%  Section 4.X — Visual Grounding Evaluation (Major Comment 3)
+%  Paste into Results / Experiments section of revised manuscript
+% ============================================================
+
+\subsection{Visual Grounding Evaluation}
+\label{sec:visual_grounding}
+
+Qualitative heatmaps alone are insufficient to support claims about model
+grounding~\cite{chefer2021transformer}.
+We therefore report a quantitative grounding protocol alongside revised
+attribution visualizations.
+Throughout, we refer to this analysis as \emph{visual grounding} rather than
+clinical explainability: saliency maps indicate where the model attends when
+producing an answer, but they are not validated by radiologist review.
+
+\paragraph{Attribution maps.}
+Saliency is computed from an ensemble of FineGrained text$\rightarrow$image
+cross-attention maps (final three layers) and fusion-block
+text$\rightarrow$image cross-attention, rather than raw ViT Grad-CAM.
+This targets the multimodal fusion stage where question semantics interact
+with grounded image tokens.
+
+\paragraph{SLAKE (mask-based Pointing Game).}
+SLAKE provides an official lesion segmentation mask (\texttt{mask.png}) for
+each of the 642 test images.
+We evaluate on the \textbf{full test set} ($n{=}1061$ QA pairs).
+A pointing prediction is a \emph{hit} if the top 5\% saliency mass overlaps
+the lesion mask; we also report argmax pointing for comparison.
+Top-5\% overlap is more stable than argmax for small lesions.
+
+Table~\ref{tab:pointing_game} summarizes the results.
+MED-VLAT achieves 86.24\% VQA accuracy on SLAKE.
+Mask-based Pointing Game accuracy is 43.92\% (argmax) and
+\textbf{70.97\%} (top-5\% saliency overlap) on the same full test set.
+On correctly answered questions only, top-5\% pointing remains 70.07\%,
+indicating that grounding performance is not driven solely by incorrect
+predictions.
+Figure~\ref{fig:slake_grounding} shows five representative localization cases
+on SLAKE with official \texttt{detection.json} bounding boxes (red) and
+argmax pointing verification (column~e); the caption reports full-test
+Pointing Game accuracy.
+
+\paragraph{PathVQA and VQA-RAD (attention-focus proxy).}
+PathVQA and VQA-RAD test annotations do not include segmentation masks or
+bounding boxes, so mask-based Pointing Game is \textbf{not applicable} on either
+dataset.
+We therefore report \emph{mean attention focus}---the peak-to-mean saliency
+ratio on the same combined attribution maps (higher values indicate more
+localized, less diffuse saliency).
+On PathVQA ($n{=}6719$), MED-VLAT achieves 65.66\% VQA accuracy (41.63\%
+open, 89.65\% closed); mean attention focus is 2.21 on the full test set and
+\textbf{1.99} on correctly answered questions, indicating tighter saliency when
+predictions are right.
+On VQA-RAD ($n{=}451$), the locked MED-VLAT dual-route system achieves
+\textbf{81.82\%} test accuracy (369/451): FGGF for open and multi-choice
+closed questions, dedicated closed yes/no specialist for binary questions.
+VQA-RAD provides no region annotations, so Pointing Game is N/A; we report
+mean attention focus \textbf{3.39} on localizing-style questions ($n{=}220$;
+3.32 on the full test set) using FineGrained+fusion maps from the FGGF Q2A
+checkpoint (see Table~\ref{tab:pointing_game}).
+Without region labels, these scores serve as a complementary localization proxy
+rather than verified grounding accuracy; SLAKE Pointing Game remains our
+primary quantitative grounding metric.
+
+\paragraph{Limitations.}
+Transformer attribution methods remain an active research area and may
+highlight high-frequency structures or background context.
+A radiologist user study was not feasible within the revision timeline and is
+identified as future work.
+
+% --- Figure 6 (locked qualitative + Pointing Game layout) ---
+\input{output/figures/slake_figure6_locked.tex}

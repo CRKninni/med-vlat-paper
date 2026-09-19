@@ -168,3 +168,64 @@ MED-VLAT\_384 (Pretrain No GF)
 \bottomrule
 \end{tabular}}
 \end{table*}
+
+
+% ── Table 3: Open-ended NLP metrics (Reviewer Major Rev. 1) ─────────────────
+\begin{table}[t]
+\centering
+\caption{Open-ended evaluation on SLAKE and PathVQA test sets.
+Accuracy follows the main protocol in Table~\ref{tab:medvlat_ablation_combined};
+generation metrics (BLEU-4, ROUGE-L, METEOR, CIDEr, BERTScore) are computed
+on all open-ended questions using the best MED-VLAT configuration per dataset.}
+\label{tab:open_nlp_metrics}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Dataset} &
+\textbf{Acc (\%)} &
+\textbf{BLEU-4} &
+\textbf{ROUGE-L} &
+\textbf{METEOR} &
+\textbf{CIDEr} &
+\textbf{BERTScore} \\
+\midrule
+SLAKE   & 85.58 & 18.55 & 81.64 & 46.63 & 256.54 & 97.91 \\
+PathVQA & 41.63 &  7.36 & 38.42 & 20.70 & 106.20 & 93.65 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+
+% ── Table 4: Visual grounding (Reviewer Major Rev. 3) ─────────────────────
+\begin{table}[t]
+\centering
+\caption{Visual grounding on SLAKE ($n{=}1061$), PathVQA ($n{=}6719$), and
+VQA-RAD ($n{=}451$) test sets. Attribution uses FineGrained + fusion
+text$\rightarrow$image cross-attention. SLAKE has official masks; PathVQA and
+VQA-RAD have no region annotations (Pointing Game N/A).}
+\label{tab:pointing_game}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{SLAKE} & \textbf{PathVQA} & \textbf{VQA-RAD} \\
+\midrule
+VQA accuracy (full test set)             & 86.24 & 65.66 & 81.82$^\ddag$ \\
+Pointing Game (mask, argmax)             & 43.92 & N/A$^\dagger$ & N/A$^\dagger$ \\
+Pointing Game (mask, top-5\% saliency)   & 70.97 & N/A$^\dagger$ & N/A$^\dagger$ \\
+Mean attention focus$^\S$                & --    & 1.99 & 3.39 \\
+\bottomrule
+\end{tabular}}
+\vspace{2pt}
+\parbox{\columnwidth}{\footnotesize $^\S$Mean attention focus: PathVQA on
+correctly answered questions (full test $=2.21$; paper flash+aux-MLP
+checkpoint); VQA-RAD on localizing-style questions ($n{=}220$; full test
+$=3.32$).
+$^\dagger$No segmentation masks or bounding boxes;
+mask-based Pointing Game is not applicable. Mean attention focus is the
+peak-to-mean saliency ratio on the combined attribution maps (higher $=$ more
+localized). $^\ddag$VQA-RAD VQA accuracy is the \textbf{locked MED-VLAT dual-route}
+system (81.82\%, 369/451): FGGF for open and multi-choice closed questions,
+dedicated closed yes/no specialist for binary questions.
+Attention focus uses the FGGF Q2A checkpoint (same FineGrained+fusion
+attribution protocol as PathVQA).}
+\end{table}
